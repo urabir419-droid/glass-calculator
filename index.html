@@ -1,321 +1,622 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
-<meta charset="UTF-8">
-<link rel="manifest" href="manifest.json">
-<title>Calculator</title>
+  <meta charset="UTF-8">
 
-<!-- PWA install support -->
-<meta name="theme-color" content="#111827">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Calculator">
-<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='40' fill='%23111827'/%3E%3Crect x='36' y='30' width='120' height='132' rx='14' fill='%231F2937' stroke='%23374151' stroke-width='3'/%3E%3Crect x='48' y='44' width='96' height='34' rx='6' fill='%230F172A'/%3E%3Ccircle cx='70' cy='170' r='0' /%3E%3Cg fill='%2306B6D4'%3E%3Crect x='120' y='96' width='24' height='24' rx='6'/%3E%3C/g%3E%3Cg fill='%237C3AED'%3E%3Crect x='120' y='128' width='24' height='24' rx='6'/%3E%3C/g%3E%3Cg fill='%23334155'%3E%3Crect x='48' y='96' width='24' height='24' rx='6'/%3E%3Crect x='84' y='96' width='24' height='24' rx='6'/%3E%3Crect x='48' y='128' width='24' height='24' rx='6'/%3E%3Crect x='84' y='128' width='24' height='24' rx='6'/%3E%3C/g%3E%3C/svg%3E">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='40' fill='%23111827'/%3E%3Crect x='36' y='30' width='120' height='132' rx='14' fill='%231F2937' stroke='%23374151' stroke-width='3'/%3E%3Crect x='48' y='44' width='96' height='34' rx='6' fill='%230F172A'/%3E%3Cg fill='%2306B6D4'%3E%3Crect x='120' y='96' width='24' height='24' rx='6'/%3E%3C/g%3E%3Cg fill='%237C3AED'%3E%3Crect x='120' y='128' width='24' height='24' rx='6'/%3E%3C/g%3E%3Cg fill='%23334155'%3E%3Crect x='48' y='96' width='24' height='24' rx='6'/%3E%3Crect x='84' y='96' width='24' height='24' rx='6'/%3E%3Crect x='48' y='128' width='24' height='24' rx='6'/%3E%3Crect x='84' y='128' width='24' height='24' rx='6'/%3E%3C/g%3E%3C/svg%3E">
-<style>
-  :root {
-    --bg: #111827;
-    --panel: #1F2937;
-    --display-bg: #0F172A;
-    --text: #F9FAFB;
-    --muted: #9CA3AF;
-    --number: #334155;
-    --number-active: #46566e;
-    --operator: #7C3AED;
-    --operator-active: #6d28d9;
-    --action: #475569;
-    --action-active: #3f4b5c;
-    --equal: #06B6D4;
-    --equal-active: #0891b2;
-    --border: #374151;
-  }
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-  * {
-    box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent;
-  }
+  <meta name="theme-color" content="#000000">
+  <meta name="description"
+        content="A professional liquid glass calculator with a clean modern interface.">
 
-  html, body {
-    height: 100%;
-    margin: 0;
-  }
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Calculator">
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    padding: 16px;
-  }
+  <title>Liquid Calculator</title>
 
-  .app {
-    width: 100%;
-    max-width: 380px;
-  }
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json">
 
-  .header {
-    text-align: center;
-    margin-bottom: 18px;
-  }
+  <!-- App Icon -->
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+  <link rel="apple-touch-icon" href="icon-192.png">
 
-  .header h1 {
-    font-size: 20px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    margin: 0 0 6px 0;
-  }
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
 
-  .header p {
-    font-size: 12px;
-    color: var(--muted);
-    margin: 0;
-  }
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
 
-  .display-frame {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 2px;
-  }
+    body {
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "SF Pro Display",
+        "SF Pro Text",
+        "Segoe UI",
+        Roboto,
+        Arial,
+        sans-serif;
 
-  .display {
-    background: var(--display-bg);
-    border-radius: 10px;
-    padding: 22px 18px;
-    text-align: right;
-    font-size: 34px;
-    font-weight: 700;
-    min-height: 40px;
-    overflow-x: auto;
-    white-space: nowrap;
-    word-break: break-all;
-  }
+      background:
+        radial-gradient(circle at 20% 15%, rgba(255,255,255,.08), transparent 28%),
+        radial-gradient(circle at 80% 85%, rgba(90,120,255,.10), transparent 32%),
+        #000;
 
-  .buttons {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
-    margin-top: 18px;
-  }
+      color: white;
 
-  button {
-    border: none;
-    border-radius: 12px;
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--text);
-    padding: 20px 0;
-    cursor: pointer;
-    transition: transform 0.06s ease, filter 0.15s ease;
-  }
+      display: flex;
+      align-items: center;
+      justify-content: center;
 
-  button:active {
-    transform: scale(0.95);
-    filter: brightness(0.9);
-  }
+      min-height: 100dvh;
+      padding: 14px;
 
-  .num { background: var(--number); }
-  .op { background: var(--operator); }
-  .action { background: var(--action); }
-  .equal { background: var(--equal); grid-row: span 2; height: 100%; }
+      -webkit-font-smoothing: antialiased;
+    }
 
-  .col-span-2 { grid-column: span 2; }
-</style>
+    /* Ambient liquid lights */
+
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      filter: blur(70px);
+      pointer-events: none;
+      opacity: .35;
+    }
+
+    body::before {
+      background: #315cff;
+      top: -120px;
+      left: -100px;
+    }
+
+    body::after {
+      background: #7a35ff;
+      bottom: -140px;
+      right: -100px;
+    }
+
+    .calculator {
+      position: relative;
+      width: min(100%, 390px);
+      padding: 18px;
+
+      border-radius: 38px;
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(255,255,255,.105),
+          rgba(255,255,255,.035)
+        );
+
+      border: 1px solid rgba(255,255,255,.10);
+
+      box-shadow:
+        0 30px 80px rgba(0,0,0,.65),
+        inset 0 1px 0 rgba(255,255,255,.10);
+
+      backdrop-filter: blur(35px);
+      -webkit-backdrop-filter: blur(35px);
+    }
+
+    /* subtle liquid highlight */
+
+    .calculator::before {
+      content: "";
+      position: absolute;
+      inset: 1px;
+      border-radius: 37px;
+      pointer-events: none;
+
+      background:
+        linear-gradient(
+          135deg,
+          rgba(255,255,255,.08),
+          transparent 35%,
+          transparent 70%,
+          rgba(255,255,255,.035)
+        );
+    }
+
+    .top {
+      position: relative;
+      z-index: 2;
+
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      padding: 2px 5px 12px;
+    }
+
+    .title {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 1.8px;
+      color: rgba(255,255,255,.58);
+    }
+
+    .status {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #8cffd1;
+      box-shadow: 0 0 14px rgba(140,255,209,.8);
+    }
+
+    /* Display */
+
+    .display {
+      position: relative;
+      z-index: 2;
+
+      min-height: 128px;
+
+      padding: 18px 10px 16px;
+
+      display: flex;
+      align-items: flex-end;
+      justify-content: flex-end;
+
+      overflow: hidden;
+
+      border-radius: 28px;
+
+      background:
+        linear-gradient(
+          145deg,
+          rgba(255,255,255,.075),
+          rgba(255,255,255,.018)
+        );
+
+      border: 1px solid rgba(255,255,255,.07);
+
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.05);
+    }
+
+    #expression {
+      width: 100%;
+
+      text-align: right;
+
+      color: rgba(255,255,255,.96);
+
+      font-size: clamp(42px, 11vw, 64px);
+      font-weight: 300;
+
+      line-height: 1;
+
+      white-space: nowrap;
+      overflow-x: auto;
+      overflow-y: hidden;
+
+      scrollbar-width: none;
+
+      letter-spacing: -2px;
+    }
+
+    #expression::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Buttons */
+
+    .keys {
+      position: relative;
+      z-index: 2;
+
+      display: grid;
+
+      grid-template-columns:
+        repeat(4, 1fr);
+
+      gap: 10px;
+
+      margin-top: 12px;
+    }
+
+    button {
+      position: relative;
+
+      border: 0;
+      outline: 0;
+
+      height: 68px;
+
+      border-radius: 50%;
+
+      color: white;
+
+      font-family: inherit;
+
+      font-size: 24px;
+      font-weight: 400;
+
+      cursor: pointer;
+
+      overflow: hidden;
+
+      transition:
+        transform .08s ease,
+        filter .12s ease,
+        background .12s ease;
+
+      -webkit-touch-callout: none;
+    }
+
+    button::before {
+      content: "";
+
+      position: absolute;
+      inset: 0;
+
+      background:
+        linear-gradient(
+          135deg,
+          rgba(255,255,255,.12),
+          transparent 45%
+        );
+
+      opacity: .6;
+      pointer-events: none;
+    }
+
+    button:active {
+      transform: scale(.91);
+      filter: brightness(.78);
+    }
+
+    .number {
+      background:
+        linear-gradient(
+          145deg,
+          rgba(65,65,70,.96),
+          rgba(30,30,33,.96)
+        );
+
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.08),
+        0 5px 15px rgba(0,0,0,.18);
+    }
+
+    .function {
+      background:
+        linear-gradient(
+          145deg,
+          rgba(180,180,185,.92),
+          rgba(120,120,125,.92)
+        );
+
+      color: #111;
+    }
+
+    .operator {
+      background:
+        linear-gradient(
+          145deg,
+          rgba(255,170,55,.98),
+          rgba(235,105,10,.98)
+        );
+
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.22),
+        0 5px 18px rgba(255,125,20,.18);
+    }
+
+    .operator.active {
+      background: white;
+      color: #f28a17;
+    }
+
+    .zero {
+      grid-column: span 2;
+
+      border-radius: 38px;
+
+      text-align: left;
+
+      padding-left: 26px;
+    }
+
+    .equals {
+      background:
+        linear-gradient(
+          145deg,
+          rgba(110,125,255,.98),
+          rgba(73,75,225,.98)
+        );
+
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.2),
+        0 7px 22px rgba(70,75,255,.22);
+    }
+
+    .bottom-space {
+      height: 4px;
+    }
+
+    /* Small phones */
+
+    @media (max-height: 700px) {
+      .calculator {
+        padding: 13px;
+        border-radius: 32px;
+      }
+
+      .display {
+        min-height: 100px;
+      }
+
+      button {
+        height: 58px;
+      }
+
+      .keys {
+        gap: 8px;
+      }
+    }
+
+    @media (max-width: 350px) {
+      .calculator {
+        padding: 12px;
+      }
+
+      button {
+        height: 60px;
+        font-size: 21px;
+      }
+
+      .display {
+        min-height: 105px;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<div class="app">
-  <div class="header">
-    <h1>CALCULATOR</h1>
-    <p>Simple &bull; Clean &bull; Modern</p>
-  </div>
+  <main class="calculator">
 
-  <div class="display-frame">
-    <div class="display" id="display">0</div>
-  </div>
+    <div class="top">
+      <div class="title">LIQUID CALCULATOR</div>
+      <div class="status"></div>
+    </div>
 
-  <div class="buttons" id="buttons">
-    <button class="action" data-action="clear">C</button>
-    <button class="action" data-action="backspace">&larr;</button>
-    <button class="action" data-value="(">(</button>
-    <button class="action" data-value=")">)</button>
+    <div class="display">
+      <div id="expression">0</div>
+    </div>
 
-    <button class="num" data-value="7">7</button>
-    <button class="num" data-value="8">8</button>
-    <button class="num" data-value="9">9</button>
-    <button class="op" data-value="/">&divide;</button>
+    <div class="keys" id="keys">
 
-    <button class="num" data-value="4">4</button>
-    <button class="num" data-value="5">5</button>
-    <button class="num" data-value="6">6</button>
-    <button class="op" data-value="*">&times;</button>
+      <button class="function" data-action="clear">AC</button>
+      <button class="function" data-action="sign">±</button>
+      <button class="function" data-action="percent">%</button>
+      <button class="operator" data-value="/">÷</button>
 
-    <button class="num" data-value="1">1</button>
-    <button class="num" data-value="2">2</button>
-    <button class="num" data-value="3">3</button>
-    <button class="op" data-value="-">&minus;</button>
+      <button class="number" data-value="7">7</button>
+      <button class="number" data-value="8">8</button>
+      <button class="number" data-value="9">9</button>
+      <button class="operator" data-value="*">×</button>
 
-    <button class="num col-span-2" data-value="0">0</button>
-    <button class="num" data-value=".">.</button>
-    <button class="op" data-value="+">+</button>
-  </div>
+      <button class="number" data-value="4">4</button>
+      <button class="number" data-value="5">5</button>
+      <button class="number" data-value="6">6</button>
+      <button class="operator" data-value="-">−</button>
 
-  <div class="buttons" style="margin-top: 10px; grid-template-columns: 1fr;">
-    <button class="equal" data-action="equals">=</button>
-  </div>
+      <button class="number" data-value="1">1</button>
+      <button class="number" data-value="2">2</button>
+      <button class="number" data-value="3">3</button>
+      <button class="operator" data-value="+">+</button>
 
-  <button id="installBtn" style="display:none; width:100%; margin-top:14px; background:var(--panel); border:1px solid var(--border); color:var(--text); padding:14px 0; border-radius:12px; font-size:14px; font-weight:700;">
-    📲 ইনস্টল করুন (Install App)
-  </button>
-  <p id="installHint" style="display:none; text-align:center; color:var(--muted); font-size:12px; margin-top:10px; line-height:1.6;"></p>
-</div>
+      <button class="number zero" data-value="0">0</button>
+      <button class="number" data-value=".">.</button>
+      <button class="equals" data-action="equals">=</button>
 
-<script>
-  const display = document.getElementById('display');
-  let expression = '';
-  let justErrored = false;
+    </div>
 
-  function updateDisplay() {
-    display.textContent = expression === '' ? '0' : expression;
-  }
+    <div class="bottom-space"></div>
 
-  function press(value) {
-    if (justErrored) {
-      expression = '';
-      justErrored = false;
-    }
-    expression += value;
-    updateDisplay();
-  }
+  </main>
 
-  function clearAll() {
-    expression = '';
-    justErrored = false;
-    updateDisplay();
-  }
+  <script>
+    const display = document.getElementById("expression");
+    const keys = document.getElementById("keys");
 
-  function backspace() {
-    if (justErrored) {
-      clearAll();
-      return;
-    }
-    expression = expression.slice(0, -1);
-    updateDisplay();
-  }
+    let expression = "";
+    let justCalculated = false;
 
-  function calculate() {
-    if (!expression.trim()) return;
+    function render() {
+      display.textContent = expression || "0";
 
-    // শুধু নিরাপদ ক্যারেক্টার অনুমোদন
-    const allowed = /^[0-9+\-*/().\s]+$/;
-    if (!allowed.test(expression)) {
-      expression = 'Error';
-      justErrored = true;
-      updateDisplay();
-      return;
+      requestAnimationFrame(() => {
+        display.scrollLeft = display.scrollWidth;
+      });
     }
 
-    try {
-      // eslint-disable-next-line no-new-func
-      let result = Function('"use strict"; return (' + expression + ')')();
+    function clearAll() {
+      expression = "";
+      justCalculated = false;
+      render();
+    }
 
-      if (!isFinite(result)) {
-        expression = 'Cannot divide by 0';
-        justErrored = true;
-        updateDisplay();
+    function addValue(value) {
+
+      if (justCalculated) {
+        expression = "";
+        justCalculated = false;
+      }
+
+      expression += value;
+      render();
+    }
+
+    function toggleSign() {
+
+      if (!expression) return;
+
+      if (expression.startsWith("-(") && expression.endsWith(")")) {
+        expression = expression.slice(2, -1);
+      } else {
+        expression = "-(" + expression + ")";
+      }
+
+      render();
+    }
+
+    function percent() {
+
+      if (!expression) return;
+
+      try {
+        const value = Function(
+          '"use strict"; return (' + expression + ')'
+        )();
+
+        if (!Number.isFinite(value)) {
+          throw new Error();
+        }
+
+        expression = String(value / 100);
+        render();
+
+      } catch {
+        showError();
+      }
+    }
+
+    function showError() {
+      expression = "Error";
+      justCalculated = true;
+      render();
+    }
+
+    function calculate() {
+
+      if (!expression.trim()) return;
+
+      if (!/^[0-9+\-*/().\s]+$/.test(expression)) {
+        showError();
         return;
       }
 
-      // ছোট floating point ত্রুটি দূর করা (যেমন 0.1+0.2)
-      result = Math.round(result * 1e10) / 1e10;
+      try {
 
-      expression = String(result);
-      justErrored = false;
-      updateDisplay();
-    } catch (e) {
-      expression = 'Error';
-      justErrored = true;
-      updateDisplay();
+        let result = Function(
+          '"use strict"; return (' + expression + ')'
+        )();
+
+        if (
+          typeof result !== "number" ||
+          !Number.isFinite(result)
+        ) {
+          showError();
+          return;
+        }
+
+        result =
+          Math.round((result + Number.EPSILON) * 1e10) / 1e10;
+
+        expression = String(result);
+        justCalculated = true;
+
+        render();
+
+      } catch {
+        showError();
+      }
     }
-  }
 
-  document.getElementById('buttons').addEventListener('click', (e) => {
-    const btn = e.target.closest('button');
-    if (!btn) return;
-    if (btn.dataset.action === 'clear') return clearAll();
-    if (btn.dataset.action === 'backspace') return backspace();
-    if (btn.dataset.value !== undefined) return press(btn.dataset.value);
-  });
+    keys.addEventListener("click", (event) => {
 
-  document.querySelector('[data-action="equals"]').addEventListener('click', calculate);
+      const button = event.target.closest("button");
 
-  document.addEventListener('keydown', (e) => {
-    if (e.key >= '0' && e.key <= '9') return press(e.key);
-    if ('+-*/().'.includes(e.key)) return press(e.key);
-    if (e.key === 'Enter' || e.key === '=') { e.preventDefault(); return calculate(); }
-    if (e.key === 'Backspace') return backspace();
-    if (e.key === 'Escape') return clearAll();
-  });
+      if (!button) return;
 
-  updateDisplay();
+      const action = button.dataset.action;
+      const value = button.dataset.value;
 
-  // ---------- PWA: inline manifest (so this stays one self-contained file) ----------
-  const manifest = {
-    name: "Glass Calculator",
-    short_name: "Calculator",
-    start_url: ".",
-    display: "standalone",
-    background_color: "#111827",
-    theme_color: "#111827",
-    icons: [{
-      src: document.querySelector('link[rel="icon"]').href,
-      sizes: "192x192",
-      type: "image/svg+xml",
-      purpose: "any maskable"
-    }]
-  };
-  const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
-  const manifestLink = document.createElement('link');
-  manifestLink.rel = 'manifest';
-  manifestLink.href = URL.createObjectURL(manifestBlob);
-  document.head.appendChild(manifestLink);
+      if (action === "clear") {
+        clearAll();
+        return;
+      }
 
-  // ---------- Android/Chrome: native install prompt ----------
-  const installBtn = document.getElementById('installBtn');
-  const installHint = document.getElementById('installHint');
-  let deferredPrompt = null;
+      if (action === "sign") {
+        toggleSign();
+        return;
+      }
 
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    installBtn.style.display = 'block';
-  });
+      if (action === "percent") {
+        percent();
+        return;
+      }
 
-  installBtn.addEventListener('click', async () => {
-    if (!deferredPrompt) return;
-    deferredPrompt.prompt();
-    await deferredPrompt.userChoice;
-    deferredPrompt = null;
-    installBtn.style.display = 'none';
-  });
+      if (action === "equals") {
+        calculate();
+        return;
+      }
 
-  window.addEventListener('appinstalled', () => {
-    installBtn.style.display = 'none';
-  });
+      if (value !== undefined) {
+        addValue(value);
+      }
 
-  // ---------- iOS Safari: no install prompt API exists, show manual instructions ----------
-  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
-  const isInStandaloneMode = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+    });
 
-  if (isIOS && !isInStandaloneMode) {
-    installHint.style.display = 'block';
-    installHint.textContent = 'iPhone এ ইনস্টল করতে: নিচের Share (⬆️) বাটনে চাপুন, তারপর "Add to Home Screen" সিলেক্ট করুন।';
-  }
-</script>
+    document.addEventListener("keydown", (event) => {
+
+      const key = event.key;
+
+      if (/^[0-9]$/.test(key)) {
+        addValue(key);
+        return;
+      }
+
+      if ("+-*/().".includes(key)) {
+        addValue(key);
+        return;
+      }
+
+      if (key === "Enter" || key === "=") {
+        event.preventDefault();
+        calculate();
+        return;
+      }
+
+      if (key === "Escape") {
+        clearAll();
+        return;
+      }
+
+      if (key === "Backspace") {
+        if (!justCalculated) {
+          expression = expression.slice(0, -1);
+          render();
+        } else {
+          clearAll();
+        }
+      }
+
+    });
+
+    render();
+  </script>
 
 </body>
 </html>
