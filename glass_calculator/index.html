@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Calculator</title>
+
+<!-- PWA install support -->
+<meta name="theme-color" content="#111827">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Calculator">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='40' fill='%23111827'/%3E%3Crect x='36' y='30' width='120' height='132' rx='14' fill='%231F2937' stroke='%23374151' stroke-width='3'/%3E%3Crect x='48' y='44' width='96' height='34' rx='6' fill='%230F172A'/%3E%3Ccircle cx='70' cy='170' r='0' /%3E%3Cg fill='%2306B6D4'%3E%3Crect x='120' y='96' width='24' height='24' rx='6'/%3E%3C/g%3E%3Cg fill='%237C3AED'%3E%3Crect x='120' y='128' width='24' height='24' rx='6'/%3E%3C/g%3E%3Cg fill='%23334155'%3E%3Crect x='48' y='96' width='24' height='24' rx='6'/%3E%3Crect x='84' y='96' width='24' height='24' rx='6'/%3E%3Crect x='48' y='128' width='24' height='24' rx='6'/%3E%3Crect x='84' y='128' width='24' height='24' rx='6'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='40' fill='%23111827'/%3E%3Crect x='36' y='30' width='120' height='132' rx='14' fill='%231F2937' stroke='%23374151' stroke-width='3'/%3E%3Crect x='48' y='44' width='96' height='34' rx='6' fill='%230F172A'/%3E%3Cg fill='%2306B6D4'%3E%3Crect x='120' y='96' width='24' height='24' rx='6'/%3E%3C/g%3E%3Cg fill='%237C3AED'%3E%3Crect x='120' y='128' width='24' height='24' rx='6'/%3E%3C/g%3E%3Cg fill='%23334155'%3E%3Crect x='48' y='96' width='24' height='24' rx='6'/%3E%3Crect x='84' y='96' width='24' height='24' rx='6'/%3E%3Crect x='48' y='128' width='24' height='24' rx='6'/%3E%3Crect x='84' y='128' width='24' height='24' rx='6'/%3E%3C/g%3E%3C/svg%3E">
+<style>
+  :root {
+    --bg: #111827;
+    --panel: #1F2937;
+    --display-bg: #0F172A;
+    --text: #F9FAFB;
+    --muted: #9CA3AF;
+    --number: #334155;
+    --number-active: #46566e;
+    --operator: #7C3AED;
+    --operator-active: #6d28d9;
+    --action: #475569;
+    --action-active: #3f4b5c;
+    --equal: #06B6D4;
+    --equal-active: #0891b2;
+    --border: #374151;
+  }
+
+  * {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  html, body {
+    height: 100%;
+    margin: 0;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 16px;
+  }
+
+  .app {
+    width: 100%;
+    max-width: 380px;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 18px;
+  }
+
+  .header h1 {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin: 0 0 6px 0;
+  }
+
+  .header p {
+    font-size: 12px;
+    color: var(--muted);
+    margin: 0;
+  }
+
+  .display-frame {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 2px;
+  }
+
+  .display {
+    background: var(--display-bg);
+    border-radius: 10px;
+    padding: 22px 18px;
+    text-align: right;
+    font-size: 34px;
+    font-weight: 700;
+    min-height: 40px;
+    overflow-x: auto;
+    white-space: nowrap;
+    word-break: break-all;
+  }
+
+  .buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-top: 18px;
+  }
+
+  button {
+    border: none;
+    border-radius: 12px;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    padding: 20px 0;
+    cursor: pointer;
+    transition: transform 0.06s ease, filter 0.15s ease;
+  }
+
+  button:active {
+    transform: scale(0.95);
+    filter: brightness(0.9);
+  }
+
+  .num { background: var(--number); }
+  .op { background: var(--operator); }
+  .action { background: var(--action); }
+  .equal { background: var(--equal); grid-row: span 2; height: 100%; }
+
+  .col-span-2 { grid-column: span 2; }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <div class="header">
+    <h1>CALCULATOR</h1>
+    <p>Simple &bull; Clean &bull; Modern</p>
+  </div>
+
+  <div class="display-frame">
+    <div class="display" id="display">0</div>
+  </div>
+
+  <div class="buttons" id="buttons">
+    <button class="action" data-action="clear">C</button>
+    <button class="action" data-action="backspace">&larr;</button>
+    <button class="action" data-value="(">(</button>
+    <button class="action" data-value=")">)</button>
+
+    <button class="num" data-value="7">7</button>
+    <button class="num" data-value="8">8</button>
+    <button class="num" data-value="9">9</button>
+    <button class="op" data-value="/">&divide;</button>
+
+    <button class="num" data-value="4">4</button>
+    <button class="num" data-value="5">5</button>
+    <button class="num" data-value="6">6</button>
+    <button class="op" data-value="*">&times;</button>
+
+    <button class="num" data-value="1">1</button>
+    <button class="num" data-value="2">2</button>
+    <button class="num" data-value="3">3</button>
+    <button class="op" data-value="-">&minus;</button>
+
+    <button class="num col-span-2" data-value="0">0</button>
+    <button class="num" data-value=".">.</button>
+    <button class="op" data-value="+">+</button>
+  </div>
+
+  <div class="buttons" style="margin-top: 10px; grid-template-columns: 1fr;">
+    <button class="equal" data-action="equals">=</button>
+  </div>
+
+  <button id="installBtn" style="display:none; width:100%; margin-top:14px; background:var(--panel); border:1px solid var(--border); color:var(--text); padding:14px 0; border-radius:12px; font-size:14px; font-weight:700;">
+    📲 ইনস্টল করুন (Install App)
+  </button>
+  <p id="installHint" style="display:none; text-align:center; color:var(--muted); font-size:12px; margin-top:10px; line-height:1.6;"></p>
+</div>
+
+<script>
+  const display = document.getElementById('display');
+  let expression = '';
+  let justErrored = false;
+
+  function updateDisplay() {
+    display.textContent = expression === '' ? '0' : expression;
+  }
+
+  function press(value) {
+    if (justErrored) {
+      expression = '';
+      justErrored = false;
+    }
+    expression += value;
+    updateDisplay();
+  }
+
+  function clearAll() {
+    expression = '';
+    justErrored = false;
+    updateDisplay();
+  }
+
+  function backspace() {
+    if (justErrored) {
+      clearAll();
+      return;
+    }
+    expression = expression.slice(0, -1);
+    updateDisplay();
+  }
+
+  function calculate() {
+    if (!expression.trim()) return;
+
+    // শুধু নিরাপদ ক্যারেক্টার অনুমোদন
+    const allowed = /^[0-9+\-*/().\s]+$/;
+    if (!allowed.test(expression)) {
+      expression = 'Error';
+      justErrored = true;
+      updateDisplay();
+      return;
+    }
+
+    try {
+      // eslint-disable-next-line no-new-func
+      let result = Function('"use strict"; return (' + expression + ')')();
+
+      if (!isFinite(result)) {
+        expression = 'Cannot divide by 0';
+        justErrored = true;
+        updateDisplay();
+        return;
+      }
+
+      // ছোট floating point ত্রুটি দূর করা (যেমন 0.1+0.2)
+      result = Math.round(result * 1e10) / 1e10;
+
+      expression = String(result);
+      justErrored = false;
+      updateDisplay();
+    } catch (e) {
+      expression = 'Error';
+      justErrored = true;
+      updateDisplay();
+    }
+  }
+
+  document.getElementById('buttons').addEventListener('click', (e) => {
+    const btn = e.target.closest('button');
+    if (!btn) return;
+    if (btn.dataset.action === 'clear') return clearAll();
+    if (btn.dataset.action === 'backspace') return backspace();
+    if (btn.dataset.value !== undefined) return press(btn.dataset.value);
+  });
+
+  document.querySelector('[data-action="equals"]').addEventListener('click', calculate);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key >= '0' && e.key <= '9') return press(e.key);
+    if ('+-*/().'.includes(e.key)) return press(e.key);
+    if (e.key === 'Enter' || e.key === '=') { e.preventDefault(); return calculate(); }
+    if (e.key === 'Backspace') return backspace();
+    if (e.key === 'Escape') return clearAll();
+  });
+
+  updateDisplay();
+
+  // ---------- PWA: inline manifest (so this stays one self-contained file) ----------
+  const manifest = {
+    name: "Glass Calculator",
+    short_name: "Calculator",
+    start_url: ".",
+    display: "standalone",
+    background_color: "#111827",
+    theme_color: "#111827",
+    icons: [{
+      src: document.querySelector('link[rel="icon"]').href,
+      sizes: "192x192",
+      type: "image/svg+xml",
+      purpose: "any maskable"
+    }]
+  };
+  const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+  const manifestLink = document.createElement('link');
+  manifestLink.rel = 'manifest';
+  manifestLink.href = URL.createObjectURL(manifestBlob);
+  document.head.appendChild(manifestLink);
+
+  // ---------- Android/Chrome: native install prompt ----------
+  const installBtn = document.getElementById('installBtn');
+  const installHint = document.getElementById('installHint');
+  let deferredPrompt = null;
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    installBtn.style.display = 'block';
+  });
+
+  installBtn.addEventListener('click', async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    installBtn.style.display = 'none';
+  });
+
+  window.addEventListener('appinstalled', () => {
+    installBtn.style.display = 'none';
+  });
+
+  // ---------- iOS Safari: no install prompt API exists, show manual instructions ----------
+  const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  const isInStandaloneMode = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+
+  if (isIOS && !isInStandaloneMode) {
+    installHint.style.display = 'block';
+    installHint.textContent = 'iPhone এ ইনস্টল করতে: নিচের Share (⬆️) বাটনে চাপুন, তারপর "Add to Home Screen" সিলেক্ট করুন।';
+  }
+</script>
+
+</body>
+</html>
