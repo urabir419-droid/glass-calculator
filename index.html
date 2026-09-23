@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
- <link rel="manifest" href="/glass-calculator/manifest.json"> 
 
 <meta name="viewport"
 content="width=device-width,
@@ -12,33 +11,36 @@ user-scalable=no,
 viewport-fit=cover">
 
 <meta name="theme-color" content="#000000">
-<meta name="description" content="Liquid Glass Calculator">
+<meta name="description" content="A smooth full-screen liquid glass calculator.">
 
-<title>Calculator</title>
+<link rel="manifest" href="/glass-calculator/manifest.json">
+
+<title>Liquid Glass Calculator</title>
 
 <style>
 :root{
-  --bg:#000;
-  --text:#fff;
-  --muted:#8e8e93;
   --orange:#ff9f0a;
-  --key:rgba(255,255,255,.105);
-  --key2:rgba(255,255,255,.07);
+  --white:#fff;
+  --muted:#8e8e93;
   --safe-top:env(safe-area-inset-top,0px);
   --safe-bottom:env(safe-area-inset-bottom,0px);
 }
 
 *{
   box-sizing:border-box;
+  margin:0;
+  padding:0;
   -webkit-tap-highlight-color:transparent;
   user-select:none;
   -webkit-user-select:none;
 }
 
-html,body{
+html,
+body{
   width:100%;
   height:100%;
   margin:0;
+  padding:0;
   overflow:hidden;
   background:#000;
 }
@@ -51,117 +53,164 @@ body{
     "SF Pro Text",
     "Segoe UI",
     sans-serif;
-  color:var(--text);
+
+  color:#fff;
+
+  /* Edge-to-edge */
+  min-height:100dvh;
+  height:100dvh;
+
+  overscroll-behavior:none;
 }
 
-/* APP */
+/* =========================
+   APP
+========================= */
 
 .app{
   position:relative;
+
   width:100%;
   height:100dvh;
-  min-height:100%;
+  min-height:100dvh;
+
   overflow:hidden;
+
   background:
     radial-gradient(
-      circle at 18% 12%,
-      rgba(80,105,255,.10),
-      transparent 30%
+      circle at 15% 10%,
+      rgba(70,100,255,.13),
+      transparent 31%
     ),
     radial-gradient(
-      circle at 86% 78%,
-      rgba(150,70,255,.08),
-      transparent 34%
+      circle at 90% 80%,
+      rgba(145,70,255,.10),
+      transparent 35%
     ),
-    #000;
+    linear-gradient(
+      145deg,
+      #050507,
+      #000 55%,
+      #020203
+    );
+
+  isolation:isolate;
 }
 
-/* Liquid glow */
+/* =========================
+   LIQUID GLOW
+========================= */
 
 .glow{
   position:absolute;
-  width:280px;
-  height:280px;
+
+  width:300px;
+  height:300px;
+
   border-radius:50%;
-  filter:blur(90px);
+
   pointer-events:none;
+
+  filter:blur(95px);
+
   opacity:.18;
-  animation:floatGlow 9s ease-in-out infinite alternate;
+
+  animation:
+    liquidFloat
+    10s ease-in-out infinite alternate;
 }
 
 .glow.one{
-  background:#315cff;
-  left:-150px;
-  top:-100px;
+  left:-170px;
+  top:-120px;
+  background:#345cff;
 }
 
 .glow.two{
-  background:#8b35ff;
-  right:-160px;
-  bottom:-130px;
+  right:-170px;
+  bottom:-150px;
+  background:#8c36ff;
   animation-delay:-4s;
 }
 
-@keyframes floatGlow{
-  from{
-    transform:translate3d(0,0,0) scale(1);
+@keyframes liquidFloat{
+
+  0%{
+    transform:
+      translate3d(0,0,0)
+      scale(1);
   }
-  to{
-    transform:translate3d(30px,20px,0) scale(1.15);
+
+  100%{
+    transform:
+      translate3d(35px,25px,0)
+      scale(1.15);
   }
 }
 
-/* MAIN */
+/* =========================
+   CALCULATOR
+========================= */
 
 .calculator{
   position:relative;
   z-index:2;
+
   width:100%;
-  height:100%;
-  min-height:100dvh;
+  height:100dvh;
 
   display:flex;
   flex-direction:column;
 
   padding:
-    calc(var(--safe-top) + 12px)
+    var(--safe-top)
     14px
-    calc(var(--safe-bottom) + 12px);
+    var(--safe-bottom)
+    14px;
 }
 
-/* DISPLAY */
+/* =========================
+   DISPLAY
+========================= */
 
 .display{
   flex:1;
+
   min-height:0;
 
   display:flex;
   flex-direction:column;
+
   justify-content:flex-end;
   align-items:flex-end;
 
   padding:
-    20px 12px
-    clamp(18px,4vh,42px)
-    12px;
+    20px
+    10px
+    clamp(16px,4vh,38px);
 }
 
 .expression{
   width:100%;
-  min-height:25px;
+
+  min-height:24px;
 
   text-align:right;
 
   color:#77777e;
-  font-size:19px;
+
+  font-size:18px;
   font-weight:400;
 
   white-space:nowrap;
+
   overflow:hidden;
   text-overflow:ellipsis;
 
   opacity:0;
-  transform:translateY(6px);
+
+  transform:
+    translateY(6px);
 
   transition:
     opacity .2s ease,
@@ -182,41 +231,53 @@ body{
     clamp(54px,15vw,92px);
 
   line-height:1;
+
   font-weight:300;
+
   letter-spacing:-2px;
 
   white-space:nowrap;
+
   overflow:hidden;
+
   text-overflow:ellipsis;
 
   transition:
-    transform .16s ease,
-    font-size .15s ease;
+    transform .14s ease;
 }
 
 .result.pop{
-  animation:numberPop .18s ease;
+  animation:
+    resultPop
+    .18s
+    ease;
 }
 
-@keyframes numberPop{
+@keyframes resultPop{
+
   0%{
-    transform:scale(.96);
+    transform:scale(.965);
   }
-  65%{
+
+  60%{
     transform:scale(1.025);
   }
+
   100%{
     transform:scale(1);
   }
 }
 
-/* KEYPAD */
+/* =========================
+   KEYPAD
+========================= */
 
 .keypad{
   flex:none;
 
   width:100%;
-  max-width:500px;
+  max-width:520px;
+
   margin:0 auto;
 
   display:grid;
@@ -225,25 +286,31 @@ body{
     repeat(4,1fr);
 
   gap:
-    clamp(9px,2.6vw,14px);
+    clamp(8px,2.5vw,14px);
 }
 
-/* BUTTON */
+/* =========================
+   BUTTON
+========================= */
 
 .key{
   position:relative;
 
   width:100%;
+
   aspect-ratio:1;
 
-  border:0;
-  outline:0;
+  border:1px solid
+    rgba(255,255,255,.055);
+
+  outline:none;
 
   border-radius:50%;
 
   overflow:hidden;
 
   display:flex;
+
   align-items:center;
   justify-content:center;
 
@@ -252,51 +319,53 @@ body{
   background:
     linear-gradient(
       145deg,
-      rgba(255,255,255,.115),
-      rgba(255,255,255,.045)
+      rgba(255,255,255,.12),
+      rgba(255,255,255,.035)
     );
 
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.11),
-    inset 0 -8px 20px rgba(0,0,0,.20),
-    0 7px 18px rgba(0,0,0,.28);
+    inset 0 1px 0
+      rgba(255,255,255,.12),
 
-  border:
-    1px solid rgba(255,255,255,.055);
+    inset 0 -8px 18px
+      rgba(0,0,0,.22),
+
+    0 7px 18px
+      rgba(0,0,0,.32);
 
   backdrop-filter:
     blur(28px)
-    saturate(145%);
+    saturate(155%);
 
   -webkit-backdrop-filter:
     blur(28px)
-    saturate(145%);
+    saturate(155%);
 
   transition:
-    transform .09s cubic-bezier(.2,.8,.2,1),
-    background .12s,
-    box-shadow .12s;
+    transform .09s ease,
+    background .12s ease,
+    box-shadow .12s ease;
 }
 
-/* glass shine */
+/* Glass reflection */
 
 .key::before{
   content:"";
 
   position:absolute;
 
-  width:70%;
+  width:72%;
   height:38%;
 
-  top:-15%;
   left:-8%;
+  top:-16%;
 
   border-radius:50%;
 
   background:
     linear-gradient(
       120deg,
-      rgba(255,255,255,.15),
+      rgba(255,255,255,.18),
       transparent
     );
 
@@ -307,7 +376,7 @@ body{
   pointer-events:none;
 }
 
-/* ripple */
+/* Ripple */
 
 .key::after{
   content:"";
@@ -317,9 +386,16 @@ body{
   width:20px;
   height:20px;
 
+  left:50%;
+  top:50%;
+
+  margin-left:-10px;
+  margin-top:-10px;
+
   border-radius:50%;
 
-  background:rgba(255,255,255,.26);
+  background:
+    rgba(255,255,255,.25);
 
   transform:scale(0);
 
@@ -328,11 +404,33 @@ body{
   pointer-events:none;
 }
 
+.key.active{
+  transform:scale(.91);
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.22),
+      rgba(255,255,255,.07)
+    );
+
+  box-shadow:
+    inset 0 1px 0
+      rgba(255,255,255,.18),
+
+    0 2px 7px
+      rgba(0,0,0,.4);
+}
+
 .key.active::after{
-  animation:ripple .38s ease-out;
+  animation:
+    ripple
+    .36s
+    ease-out;
 }
 
 @keyframes ripple{
+
   0%{
     transform:scale(.2);
     opacity:.5;
@@ -344,76 +442,62 @@ body{
   }
 }
 
-.key.active{
-  transform:scale(.91);
-
-  background:
-    linear-gradient(
-      145deg,
-      rgba(255,255,255,.20),
-      rgba(255,255,255,.075)
-    );
-
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.18),
-    0 2px 7px rgba(0,0,0,.35);
-}
-
-/* NUMBER */
+/* =========================
+   TEXT
+========================= */
 
 .number{
   position:relative;
   z-index:2;
 
   font-size:
-    clamp(27px,8vw,36px);
+    clamp(26px,8vw,36px);
 
   font-weight:400;
 
-  letter-spacing:-.5px;
+  letter-spacing:-.4px;
 }
 
-/* SMALL LETTERS */
-
-.letters{
-  position:absolute;
-
-  bottom:21%;
-
-  font-size:7px;
-  letter-spacing:2px;
-
-  color:#929298;
-}
-
-/* TOP KEYS */
+/* =========================
+   FUNCTION
+========================= */
 
 .function{
+  color:#000;
+
   background:
     linear-gradient(
       145deg,
-      rgba(255,255,255,.22),
+      rgba(255,255,255,.25),
       rgba(255,255,255,.10)
     );
-
-  color:#000;
 }
 
-/* OPERATOR */
+.function .number{
+  font-size:
+    clamp(22px,6.5vw,30px);
+}
+
+/* =========================
+   OPERATOR
+========================= */
 
 .operator{
+  color:#fff;
+
   background:
     linear-gradient(
       145deg,
       #ffad22,
-      #ff8c00
+      #ff8b00
     );
 
-  color:#fff;
-
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,.35),
-    0 8px 24px rgba(255,159,10,.18);
+    inset 0 1px 0
+      rgba(255,255,255,.35),
+
+    0 8px 24px
+      rgba(255,159,10,.20);
 }
 
 .operator.active{
@@ -422,48 +506,65 @@ body{
   background:#fff;
 
   box-shadow:
-    0 5px 18px rgba(255,255,255,.18);
+    0 5px 20px
+      rgba(255,255,255,.20);
 }
 
-/* ZERO */
+/* =========================
+   BACKSPACE
+========================= */
+
+.backspace{
+  color:#fff;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255,255,255,.15),
+      rgba(255,255,255,.045)
+    );
+}
+
+.backspace .number{
+  font-size:
+    clamp(24px,7vw,32px);
+
+  font-weight:300;
+}
+
+/* =========================
+   ZERO
+========================= */
 
 .zero{
   grid-column:span 2;
+
   aspect-ratio:auto;
+
   height:100%;
+
+  min-height:0;
 
   border-radius:999px;
 
   justify-content:flex-start;
 
   padding-left:
-    clamp(25px,7vw,34px);
+    clamp(25px,7vw,35px);
 }
 
-/* FOOTER */
+/* =========================
+   BOTTOM SPACE
+========================= */
 
-.footer{
+.bottom-space{
+  height:6px;
   flex:none;
-
-  height:9px;
-
-  display:flex;
-  justify-content:center;
-  align-items:flex-end;
-
-  opacity:.3;
 }
 
-.home-indicator{
-  width:115px;
-  height:4px;
-
-  border-radius:999px;
-
-  background:#fff;
-}
-
-/* RESPONSIVE */
+/* =========================
+   SMALL SCREEN
+========================= */
 
 @media(max-height:650px){
 
@@ -472,17 +573,19 @@ body{
   }
 
   .keypad{
-    gap:8px;
+    gap:7px;
   }
 
   .calculator{
-    padding-top:
-      calc(var(--safe-top) + 6px);
-    padding-bottom:
-      calc(var(--safe-bottom) + 7px);
+    padding-left:10px;
+    padding-right:10px;
   }
 
 }
+
+/* =========================
+   TABLET / LARGE
+========================= */
 
 @media(min-width:600px){
 
@@ -522,6 +625,8 @@ body{
 
     <section class="keypad">
 
+      <!-- TOP ROW -->
+
       <button
         class="key function"
         data-action="clear">
@@ -547,80 +652,64 @@ body{
       </button>
 
 
-      <button
-        class="key"
-        data-value="7">
+      <!-- ROW 2 -->
+
+      <button class="key" data-value="7">
         <span class="number">7</span>
       </button>
 
-      <button
-        class="key"
-        data-value="8">
+      <button class="key" data-value="8">
         <span class="number">8</span>
       </button>
 
-      <button
-        class="key"
-        data-value="9">
+      <button class="key" data-value="9">
         <span class="number">9</span>
       </button>
 
-      <button
-        class="key operator"
-        data-value="*">
+      <button class="key operator" data-value="*">
         <span class="number">×</span>
       </button>
 
 
-      <button
-        class="key"
-        data-value="4">
+      <!-- ROW 3 -->
+
+      <button class="key" data-value="4">
         <span class="number">4</span>
       </button>
 
-      <button
-        class="key"
-        data-value="5">
+      <button class="key" data-value="5">
         <span class="number">5</span>
       </button>
 
-      <button
-        class="key"
-        data-value="6">
+      <button class="key" data-value="6">
         <span class="number">6</span>
       </button>
 
-      <button
-        class="key operator"
-        data-value="-">
+      <button class="key operator" data-value="-">
         <span class="number">−</span>
       </button>
 
 
-      <button
-        class="key"
-        data-value="1">
+      <!-- ROW 4 -->
+
+      <button class="key" data-value="1">
         <span class="number">1</span>
       </button>
 
-      <button
-        class="key"
-        data-value="2">
+      <button class="key" data-value="2">
         <span class="number">2</span>
       </button>
 
-      <button
-        class="key"
-        data-value="3">
+      <button class="key" data-value="3">
         <span class="number">3</span>
       </button>
 
-      <button
-        class="key operator"
-        data-value="+">
+      <button class="key operator" data-value="+">
         <span class="number">+</span>
       </button>
 
+
+      <!-- BOTTOM ROW -->
 
       <button
         class="key zero"
@@ -640,12 +729,18 @@ body{
         <span class="number">=</span>
       </button>
 
+      <!-- BACKSPACE ROW -->
+
+      <button
+        class="key backspace"
+        data-action="backspace"
+        style="display:none">
+        <span class="number">⌫</span>
+      </button>
+
     </section>
 
-
-    <footer class="footer">
-      <div class="home-indicator"></div>
-    </footer>
+    <div class="bottom-space"></div>
 
   </main>
 
@@ -655,7 +750,7 @@ body{
 <script>
 
 /* =========================
-   CALCULATOR ENGINE
+   STATE
 ========================= */
 
 let current = "0";
@@ -671,7 +766,7 @@ const expression =
 
 
 /* =========================
-   SOUND
+   AUDIO
 ========================= */
 
 let audioContext = null;
@@ -694,20 +789,20 @@ function clickSound(){
       audioContext.resume();
     }
 
-    const osc =
+    const oscillator =
       audioContext.createOscillator();
 
     const gain =
       audioContext.createGain();
 
-    osc.type="sine";
+    oscillator.type="sine";
 
-    osc.frequency.setValueAtTime(
+    oscillator.frequency.setValueAtTime(
       165,
       audioContext.currentTime
     );
 
-    osc.frequency.exponentialRampToValueAtTime(
+    oscillator.frequency.exponentialRampToValueAtTime(
       105,
       audioContext.currentTime + .035
     );
@@ -727,15 +822,16 @@ function clickSound(){
       audioContext.currentTime + .045
     );
 
-    osc.connect(gain);
+    oscillator.connect(gain);
     gain.connect(audioContext.destination);
 
-    osc.start();
-    osc.stop(
+    oscillator.start();
+
+    oscillator.stop(
       audioContext.currentTime + .05
     );
 
-  }catch(e){}
+  }catch(error){}
 
 }
 
@@ -746,11 +842,18 @@ function clickSound(){
 
 function haptic(){
 
-  if(navigator.vibrate){
+  try{
 
-    navigator.vibrate(7);
+    if(
+      navigator.vibrate &&
+      typeof navigator.vibrate === "function"
+    ){
 
-  }
+      navigator.vibrate(7);
+
+    }
+
+  }catch(error){}
 
 }
 
@@ -807,26 +910,28 @@ function formatNumber(value){
   if(value.includes("e"))
     return value;
 
-  let num=Number(value);
+  const num=Number(value);
 
   if(!Number.isFinite(num))
     return "Error";
 
   if(
     Math.abs(num)>=1e12 ||
-    (Math.abs(num)<1e-7 && num!==0)
+    (
+      Math.abs(num)<1e-7 &&
+      num!==0
+    )
   ){
 
     return num.toExponential(6);
 
   }
 
-  let str=String(value);
+  if(value.includes(".")){
+    return value;
+  }
 
-  if(str.includes("."))
-    return str;
-
-  return Number(value).toLocaleString(
+  return num.toLocaleString(
     "en-US",
     {
       maximumFractionDigits:10
@@ -857,10 +962,9 @@ function inputDigit(digit){
 
       current=digit;
 
-    }else{
+    }else if(current.length<15){
 
-      if(current.length<15)
-        current+=digit;
+      current+=digit;
 
     }
 
@@ -894,6 +998,47 @@ function decimal(){
 
 
 /* =========================
+   BACKSPACE
+========================= */
+
+function backspace(){
+
+  if(current==="Error"){
+
+    clearAll();
+    return;
+
+  }
+
+  if(waiting){
+
+    return;
+
+  }
+
+  if(
+    current.length<=1 ||
+    (
+      current.length===2 &&
+      current.startsWith("-")
+    )
+  ){
+
+    current="0";
+
+  }else{
+
+    current=
+      current.slice(0,-1);
+
+  }
+
+  update();
+
+}
+
+
+/* =========================
    OPERATOR
 ========================= */
 
@@ -903,8 +1048,10 @@ function chooseOperator(next){
     Number(current);
 
   if(operator && waiting){
+
     operator=next;
     return;
+
   }
 
   if(previous===null){
@@ -913,15 +1060,19 @@ function chooseOperator(next){
 
   }else if(operator){
 
-    const resultValue=
+    const value=
       calculate(
         previous,
         input,
         operator
       );
 
-    current=String(resultValue);
-    previous=resultValue;
+    current=
+      Number.isFinite(value)
+      ?String(value)
+      :"Error";
+
+    previous=value;
 
     update();
 
@@ -980,7 +1131,9 @@ function equals(){
     operator===null ||
     previous===null
   ){
+
     return;
+
   }
 
   const a=previous;
@@ -1006,10 +1159,10 @@ function equals(){
   current=
     Number.isFinite(value)
     ?String(
-        Number(
-          value.toPrecision(12)
-        )
+      Number(
+        value.toPrecision(12)
       )
+    )
     :"Error";
 
   previous=null;
@@ -1033,6 +1186,7 @@ function clearAll(){
   waiting=false;
 
   expression.textContent="";
+
   expression.classList.remove("show");
 
   update();
@@ -1076,7 +1230,7 @@ function percent(){
 
 
 /* =========================
-   OPERATOR SYMBOL
+   SYMBOL
 ========================= */
 
 function displayOperator(op){
@@ -1092,7 +1246,7 @@ function displayOperator(op){
 
 
 /* =========================
-   BUTTON EVENTS
+   BUTTONS
 ========================= */
 
 document
@@ -1134,6 +1288,7 @@ document
         }
 
         return;
+
       }
 
 
@@ -1152,6 +1307,9 @@ document
       else if(action==="equals")
         equals();
 
+      else if(action==="backspace")
+        backspace();
+
     }
 
   );
@@ -1169,9 +1327,7 @@ document.addEventListener(
 
     const key=event.key;
 
-    if(
-      /^[0-9]$/.test(key)
-    ){
+    if(/^[0-9]$/.test(key)){
 
       inputDigit(key);
       return;
@@ -1214,6 +1370,15 @@ document.addEventListener(
 
     }
 
+    if(
+      key==="Backspace"
+    ){
+
+      backspace();
+      return;
+
+    }
+
     if(key==="%"){
 
       percent();
@@ -1225,7 +1390,7 @@ document.addEventListener(
 
 
 /* =========================
-   INITIAL
+   START
 ========================= */
 
 update();
